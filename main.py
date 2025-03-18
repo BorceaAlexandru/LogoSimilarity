@@ -48,7 +48,7 @@ def get_url(csv):
 #website access verification
 def access_verification(url):
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, timeout=30)
         return response.status_code == 200
     except Exception as e:
         print(f"Website {url} is not accessible: {e}")
@@ -62,7 +62,7 @@ def get_logo(driver, url):
         #added timeout
         logo_element=WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH,
-                                            '//img[contains(@class, "logo")]'))
+                                            '//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo")]'))
         )
         logo_url=logo_element.get_attribute("src")
         return logo_url
@@ -80,21 +80,29 @@ def main():
     #all websites should have protocol
     urls=[add_protocol(url) for url in urls]
 
-    logo_urls={}
+    if os.path.exists("logos_urls.json"):
+        with open("logos_urls.json", "r") as f:
+            try:
+                logo_urls=json.load(f)
+            except json.JSONDecodeError:
+                logo_urls={}
+    else:
+        logo_urls={}
+
     for url in urls:
         print("Processing URL:", url)
         if access_verification(url):
             logo_url=get_logo(driver, url)
             if logo_url:
                 logo_urls[url]=logo_url
+
+                with open("logos_urls.json", "w") as f:
+                    json.dump(logo_urls, f, indent=4)
+                print(f"Saved logo URL for {url}")
         else:
-            print(f"Skipping {url} because is not accessible!")
+            print(f"Skipping {url} because it is not accessible!")
 
     driver.quit()
-
-    #save data in json file
-    with open("logo_urls.json","w") as f:
-        json.dump(logo_urls,f, indent=4)
     print("Done!")
 
 if __name__=="__main__":
