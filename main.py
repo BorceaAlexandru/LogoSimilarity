@@ -13,15 +13,21 @@ driver = webdriver.Firefox(service=service,options=options)
 
 #scot url din fisier
 def get_url(csv):
-    if os.path.exists(csv):
-        df=pd.read_csv(csv)
-        print("URL extraction works!")
-    else:
+    if not os.path.exists(csv):
         print("File not found!")
         return []
+    try:
+        df=pd.read_csv(csv)
+        if df.empty:
+            print("Empty file!")
+            return []
 
-    urls=df[df.columns[0]].dropna()
-    return urls.tolist()
+        urls=df[df.columns[0]].dropna()
+        print("URL extraction works!")
+        return urls.tolist()
+    except Exception as e:
+        print(f"Error reading CSV file: {e}")
+        return []
 
 driver.get("https://www.google.com")
 driver.quit()
