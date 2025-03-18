@@ -7,13 +7,18 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import json
+import requests
 
 
 #config gecko
 service=Service("geckodriver.exe")
 options = Options()
 options.headless=True #rulare in fundal fara interfata grafica
+options.accept_insecure_certs=True #invalid ssl certificates
+options.set_preference("general.useragent.override",
+                       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
 driver=webdriver.Firefox(service=service,options=options)
+driver.set_page_load_timeout(30) #timeout set to 30secs
 
 #adding protocol to each website
 def add_protocol(url):
@@ -38,6 +43,16 @@ def get_url(csv):
     except Exception as e:
         print(f"Error reading CSV file: {e}")
         return []
+
+
+#website access verification
+def access_verification(url):
+    try:
+        response = requests.get(url, timeout=10)
+        return response.status_code == 200
+    except Exception as e:
+        print(f"Website {url} is not accessible: {e}")
+        return False
 
 
 #get logooos
@@ -68,9 +83,12 @@ def main():
     logo_urls={}
     for url in urls:
         print("Processing URL:", url)
-        logo_url=get_logo(driver, url)
-        if logo_url:
-            logo_urls[url]=logo_url
+        if access_verification(url):
+            logo_url=get_logo(driver, url)
+            if logo_url:
+                logo_urls[url]=logo_url
+        else:
+            print(f"Skipping {url} because is not accessible!")
 
     driver.quit()
 
