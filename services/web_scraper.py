@@ -19,18 +19,24 @@ def get_logo(driver, url):
     try:
         driver.get(url)
         #added timeout
-        logo_element=WebDriverWait(driver, 10).until(
+        logo_element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH,
-                                            '(//header//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo")'
-                                            'or contains(@src, "logo") or contains(@title, "logo")]) |'
-                                            '(//footer//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo")'
-                                            'or contains(@src, "logo") or contains(@title, "logo")]) |'
+                                            '(//header//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo") '
+                                            'or contains(@src, "logo") or contains(@title, "logo")]) | '
+                                            '(//footer//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo") '
+                                            'or contains(@src, "logo") or contains(@title, "logo")]) | '
                                             '(//aside//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo") '
-                                            'or contains(@src, "logo") or contains(@title, "logo")]) |'
-                                            '(//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo") or contains(@src, "logo")]) |'
-                                            '(//div[contains(@class, "logo") or contains(@id, "logo")]//img) |'
-                                            '(//a[contains(@class, "logo") or contains(@id, "logo")]//img) |'
-                                            '(//svg[contains(@class, "logo") or contains(@id, "logo")])'
+                                            'or contains(@src, "logo") or contains(@title, "logo")]) | '
+                                            '(//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo") or contains(@src, "logo")]) | '
+                                            '(//div[contains(@class, "logo") or contains(@id, "logo")]//img) | '
+                                            '(//a[contains(@class, "logo") or contains(@id, "logo")]//img) | '
+                                            '(//svg[contains(@class, "logo") or contains(@id, "logo")]) | '
+                                            '(//picture[contains(@class, "logo") or contains(@id, "logo")]//img) | '
+                                            '(//source[contains(@class, "logo") or contains(@id, "logo")]//img) | '
+                                            '(//object[contains(@class, "logo") or contains(@id, "logo")]//img) | '
+                                            '(//embed[contains(@class, "logo") or contains(@id, "logo")]//img) | '
+                                            '//img[(contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo") or contains(@src, "logo") or contains(@title, "logo")) '
+                                            'and (number(@width) >= 50 and number(@width) <= 200) and (number(@height) >= 50 and number(@height) <= 200)]'
                                             ))
         )
         logo_url=logo_element.get_attribute("src")
