@@ -21,7 +21,17 @@ def get_logo(driver, url):
         #added timeout
         logo_element=WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH,
-                                            '//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo")]'))
+                                            '(//header//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo")'
+                                            'or contains(@src, "logo") or contains(@title, "logo")]) |'
+                                            '(//footer//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo")'
+                                            'or contains(@src, "logo") or contains(@title, "logo")]) |'
+                                            '(//aside//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo") '
+                                            'or contains(@src, "logo") or contains(@title, "logo")]) |'
+                                            '(//img[contains(@class, "logo") or contains(@id, "logo") or contains(@alt, "logo") or contains(@src, "logo")]) |'
+                                            '(//div[contains(@class, "logo") or contains(@id, "logo")]//img) |'
+                                            '(//a[contains(@class, "logo") or contains(@id, "logo")]//img) |'
+                                            '(//svg[contains(@class, "logo") or contains(@id, "logo")])'
+                                            ))
         )
         logo_url=logo_element.get_attribute("src")
         return logo_url
